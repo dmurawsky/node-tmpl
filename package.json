@@ -1,0 +1,24 @@
+{
+  "name": "node-tmpl",
+  "version": "0.0.1",
+  "description": "A simple Node.js templating engine for generating static html files to be served statically. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmurawsky/node-tmpl.git"
+  },
+  "keywords": [
+    "node",
+    "html",
+    "static"
+  ],
+  "author": "Daniel Murawsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dmurawsky/node-tmpl/issues"
+  },
+  "homepage": "https://github.com/dmurawsky/node-tmpl#readme"
+}
