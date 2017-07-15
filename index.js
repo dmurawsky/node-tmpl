@@ -1,25 +1,34 @@
 const fs = require('fs')
 
-const html = fs.readFileSync(__dirname + '/test.html', 'utf8')
-
-let output
-
 const regex = {
   braces: /{{\s*[\w\.]+\s*}}/g,
   content: /[\w\.]+/,
-  contentBraces: str => new RegExp('{{\s*' + str + '+\s*}}', 'g')
+  specific: str => new RegExp('{{\s*' + str + '+\s*}}', 'g')
 }
 
-let obj = html.match(regex.braces).reduce((prev, tmpl) => {
-  let tmplName = tmpl.match(regex.content)[0]
-  if (!prev[tmplName]) {
-    prev[tmplName] = fs.readFileSync(__dirname + '/' + tmplName + '.html', 'utf8')
+const write = (file, top) => {
+  let html = fs.readFileSync(__dirname + file, 'utf8'),
+      matches = html.match(regex.braces)
+
+  if (matches) {
+    let obj = matches.reduce((prev, tmpl) => {
+      let tmplName = tmpl.match(regex.content)[0]
+      if (!prev[tmplName]) {
+        prev[tmplName] = write('/parts/' + tmplName)
+      }
+      return prev
+    }, {})
+
+    Object.keys(obj).map(key => {
+      html = html.replace(regex.specific(key), obj[key])
+      return true
+    })
   }
-  return prev
-}, {})
+  
+  if (!top) {
+    return '<!-- ' + file + ' -->\n' + html
+  }
+  fs.writeFileSync(__dirname + '/public' + file.replace('/templates', ''), html, 'utf8')
+}
 
-Object.keys(obj).map(key => {
-  output = html.replace(regex.contentBraces(key), obj[key])
-})
-
-console.log(output)
+fs.readdir(__dirname + '/templates', (err, items) => items.map(file => write('/templates/' + file, true)))
